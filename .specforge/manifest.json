@@ -1,0 +1,190 @@
+{
+  "schema_version": "1",
+  "framework_version": "0.8.0",
+  "installed_at": "2026-07-27T23:21:53.652Z",
+  "last_updated_at": "2026-07-27T23:21:53.652Z",
+  "last_doctor_at": null,
+  "framework_files": [
+    {
+      "path": ".claude/rules/adr-specific.md",
+      "sha256_at_install": "6d660fd3be4dfa7d4b94f811c451aa130aadf4764feaf133df1dfd6f360bbfe4"
+    },
+    {
+      "path": ".claude/rules/framework-maintenance.md",
+      "sha256_at_install": "b13954b0d7c4effe39a0e9e5180f78137037969f752281b9021cc2b50691789d"
+    },
+    {
+      "path": ".claude/rules/gate-block.md",
+      "sha256_at_install": "b51f4b38561cf8d3f115c42c2d188bc632b8b7b8cd7bb412182be35f474c0f6d"
+    },
+    {
+      "path": ".claude/rules/hard-rules.md",
+      "sha256_at_install": "fb2f6433d9d7cdd8d1850423689aee98b2ea841be9209ef4ebb892a15b7df672"
+    },
+    {
+      "path": ".claude/rules/model-selection.md",
+      "sha256_at_install": "e7a0894f200d29386b065363a5f37add98352fff5882101a1e13ca6525d77755"
+    },
+    {
+      "path": ".claude/rules/prd-authoring.md",
+      "sha256_at_install": "64ef89d2e78fbfc0c026b0ada68ff0d2b605c8a2c08c7f4d649fa7849dcde06e"
+    },
+    {
+      "path": ".claude/rules/roadmap.md",
+      "sha256_at_install": "fd3858d30f127ff0f4af81a84e31b801fd501c43d175677eccf28eca22ba9af7"
+    },
+    {
+      "path": ".claude/rules/workflow.md",
+      "sha256_at_install": "88f7bfbfd501bc6f275cdef1a935b81c7ab9ab76a8d3d12289f7bef23dda017b"
+    },
+    {
+      "path": ".github/workflows/cli-release.yml",
+      "sha256_at_install": "8d497acf9672d188df0dc74a52940120a3e3446c24ee7fa7149fe274cbef6461"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256_at_install": "63f3ca7907c4c75b758e6e743201bb0602e79f186b0846a42a9fe7c8fa92489c"
+    },
+    {
+      "path": "CLAUDE.md",
+      "sha256_at_install": "cc58250bd7109f86bf41954ba118f03529cce5f1ac6924e116fef2df4c4d9736"
+    },
+    {
+      "path": "CONVENTIONS.md",
+      "sha256_at_install": "d9cc973ece2b529ca19ccba131e837d3e152741be11c93c8b71456b61b637ad8"
+    },
+    {
+      "path": "LICENSE",
+      "sha256_at_install": "b2a2a2f1f85637478d1ba2aa69ee11eda71c9afe58683ea514d23ea3de6151d7"
+    },
+    {
+      "path": "README.es.md",
+      "sha256_at_install": "03668798eff14c0a024ba0d8f315a987e53d8a6ee4223bbab6da6a0eea81f7dc"
+    },
+    {
+      "path": "README.md",
+      "sha256_at_install": "d5bdaf1af4ed5837ea69cd4999e50a4790a025ea70eb008ef71c5b6a03d85f8c"
+    },
+    {
+      "path": "VERSION",
+      "sha256_at_install": "a66780da23103beaf12432b418508966b31a2a3a787f9468a5b6cdaa8667c1ef"
+    },
+    {
+      "path": "agents/backend-reviewer.md",
+      "sha256_at_install": "ecbaa14715585a60e6fda5f24bb1be9bcc63bf472072ceef8f27004260429d2a"
+    },
+    {
+      "path": "agents/frontend-reviewer.md",
+      "sha256_at_install": "05dbca409fd9cde558f3aa7826bd933ff1c839f367e7137f2d1b82cfcd1ed83f"
+    },
+    {
+      "path": "agents/quality-reviewer.md",
+      "sha256_at_install": "23a6a1cb741acbb88115f56de6239e23820c44527d194be475207913af4f6798"
+    },
+    {
+      "path": "agents/roadmap-devils-advocate-critic.md",
+      "sha256_at_install": "30f6f14015719af87c087de1b478c7a4005146a9be3414032fc467c84549dbf6"
+    },
+    {
+      "path": "agents/roadmap-evidence-critic.md",
+      "sha256_at_install": "80cba08232aed6ac21a624d2cb09cbe8f22369586d8bef0ad65acc72603363fb"
+    },
+    {
+      "path": "agents/roadmap-market-generator.md",
+      "sha256_at_install": "61c5d4c1d0c69a29fec618006e5532997f50a6dd500f7064a4dbd2cf43b9b6ed"
+    },
+    {
+      "path": "agents/roadmap-opportunity-cost-critic.md",
+      "sha256_at_install": "96596dce19c5203d2a96fce81f1637e1b8452ba8a2ae4a4108fbd48006d7230d"
+    },
+    {
+      "path": "agents/roadmap-product-generator.md",
+      "sha256_at_install": "0de0a6a53fc358d19f08aa29a0ef647ea6dd6b0df2b8304c504ec2389c692720"
+    },
+    {
+      "path": "agents/roadmap-risk-critic.md",
+      "sha256_at_install": "80983d55bbd587700a2b5b57aa272fd2df5d1af3d55bd729f30ec0cd36020ab2"
+    },
+    {
+      "path": "agents/roadmap-support-generator.md",
+      "sha256_at_install": "a99d1a4f55b79ce5f47362582d2972d322260b4279a984d445631427a5c08130"
+    },
+    {
+      "path": "agents/roadmap-ux-generator.md",
+      "sha256_at_install": "20be70bd26c4f535e1a3bf4961c10a4a3ed90ce27ff857d500c421b4687dd521"
+    },
+    {
+      "path": "agents/security-reviewer.md",
+      "sha256_at_install": "97d4cda844f907fba7a0e576b36ada32c7684b3ae0910c0ea6037647eef66a8e"
+    },
+    {
+      "path": "docs/concepts/mental-model.md",
+      "sha256_at_install": "15efe0651927cc5f7404e3f7b9364123f2dc0b39dbaa5b6e2cd5b0b8dc7da58b"
+    },
+    {
+      "path": "docs/concepts/roadmap.md",
+      "sha256_at_install": "15b23adde481c254572ea1420e79fcaae1c6714e8dca8ddac979ed0f38dda17b"
+    },
+    {
+      "path": "docs/concepts/siblings.md",
+      "sha256_at_install": "d9a4984c384d92183d227b2e75ba33038305967d6b0b8ff246fe8d8a68bfb851"
+    },
+    {
+      "path": "docs/faq.md",
+      "sha256_at_install": "8bcb5433ce2fcfdce1858750466c85ee9e1f6a218cc133c537ce2aa0d9b73a3d"
+    },
+    {
+      "path": "docs/index.md",
+      "sha256_at_install": "ef3d6c63ed21615eeda8c150e3933576f523847ac310c925e7112838fd2a359c"
+    },
+    {
+      "path": "docs/quickstart.md",
+      "sha256_at_install": "b715ecefcc938b5a8b60bb3479fc96f57c4c9b34ba65b9fa5a2881cbe92db61e"
+    },
+    {
+      "path": "docs/workflow/overview.md",
+      "sha256_at_install": "746cd2c9fb9160b8b7b2da166674ffcfb3775009b3782098ccda38c84d975bf3"
+    },
+    {
+      "path": "examples/prd-001-login-example.md",
+      "sha256_at_install": "987d2b80f41f8e18c109dab95cc15a08cb760cdf1426186a53a345495525af07"
+    },
+    {
+      "path": "examples/system-artifact-example.md",
+      "sha256_at_install": "214df57d24c1b780f5a987dba435b152705b1faff93d768815ce642b9c5d2a80"
+    },
+    {
+      "path": "mkdocs.yml",
+      "sha256_at_install": "dc339e3f6c0db89ca9451d99437225211a29cf2e580e3a3ea905b52ff8fdab14"
+    },
+    {
+      "path": "requirements-docs.txt",
+      "sha256_at_install": "b648383d0fa36ceccb3fce7c76e0aa36df591c817b7e5ce46ee61c0c92f29b04"
+    },
+    {
+      "path": "scripts/upgrade.sh",
+      "sha256_at_install": "a2b215ad1a82475d587d205cebebdae2d1caad66a64b65342c973cd1ff8a96c3"
+    },
+    {
+      "path": "templates/adr.md",
+      "sha256_at_install": "e3b23709ad4d186f70c4fcd91b2b0369631a4f047dc9c990fab4e3d167e25787"
+    },
+    {
+      "path": "templates/agdr.md",
+      "sha256_at_install": "eef7261198becb173bf8c45cbba301c96ed0aa1214f1ed23e746b3fa5ba5d450"
+    },
+    {
+      "path": "templates/prd.md",
+      "sha256_at_install": "eda296e5f1881b913b780488ba357e760ce51ebbb6a02c52f00dc5d01f524f73"
+    },
+    {
+      "path": "templates/roadmap.md",
+      "sha256_at_install": "444d49f5e06b021cd4d8633db9f22ba60c2e256a5ffefbf0adf52b941adfcdc6"
+    },
+    {
+      "path": "templates/system-artifact.md",
+      "sha256_at_install": "a4b543079adb4f851a4896dacaa362cbe427883ec149949125cce9905038e6c2"
+    }
+  ],
+  "migrations_applied": []
+}
