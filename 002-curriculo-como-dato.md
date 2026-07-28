@@ -1,7 +1,8 @@
 # PRD-002: El currículo como dato jerárquico
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-27
+**Roadmap item**: ROADMAP-001
 **Author**: AI-assisted
 **Priority**: P1
 **Depends on**: None
@@ -630,10 +631,36 @@ Ninguna abierta. Las cinco que llevó este PRD durante la revisión quedaron res
 
 ## Gate: Promotion to `Implemented`
 
+<!--
+  Re-revisión post-implementación cerrada: sin 🔴 abiertos y todos los 🟡
+  cerrados por fix-in-code dentro del rango de `commit_hash`. Ningún hallazgo
+  necesitó PRD de seguimiento ni nota de deriva, así que no hay `yellow-tracking`
+  que declarar. Recuento: security 1🔴 (tres rondas) + 4🟡 + 2🟢, backend 1🟡 +
+  3🟢, quality 1🟡 + 2🟢, frontend 1🟢. El 🔴 y uno de los 🟡 los introdujo la
+  propia implementación al acotar la regla de URLs de § 5.1.
+
+  § 11 punto 3 — la única pregunta que este PRD difirió al gate en vez de a un
+  PRD futuro — queda resuelta: verificado contra Next 15.5.19 que fuera del
+  servidor de Next el especificador `next/cache` no resuelve y que
+  `unstable_cache` exige un `incrementalCache` ausente, así que NO se da por
+  bueno que sirva el valor stale al fallar la revalidación. Se implementó el
+  `try/catch` de respaldo que este PRD reserva; la fila 26 lo prueba de forma
+  determinista.
+
+  Las cuatro divergencias contra la letra del PRD viven en
+  `../platform/docs/SYSTEM_ARTIFACT.md` § Open Debt, no aquí: ese documento es
+  el vivo y sobrevive a esta foto congelada.
+-->
+
 ```yaml
-commit_hash: [TBD]
+commit_hash: 20736b7
 tests:
-  - [TBD]
+  - ../platform/scripts/check-curriculum-golden.ts
+  - ../platform/scripts/check-curriculum.ts
+  - ../platform/scripts/check-curriculum-load.ts
+  - ../platform/scripts/check-lessons.ts
+  - ../platform/scripts/check-schedule.ts
+  - ../platform/scripts/check-curriculum-identity.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/docs/SYSTEM_ARTIFACT.md#domain-contenido (commit 20736b7)
 ```
