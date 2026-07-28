@@ -1,12 +1,14 @@
 # PRD-003 (fase 1): `apps/api` en NestJS — el dominio de acceso y cobro
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-28
 **Author**: AI-assisted
 **Priority**: P1
 **Depends on**: ADR-001
 **Supersedes**: None
 **Issue**: —
+
+> **Corrección factual (2026-07-28)** — § Design Decisions afirmaba que con `"type": "module"` `tsc` "sale 0 sin un solo aviso". Es falso: el repro que produjo ese dato usaba un `schema.ts` de prueba que no importaba `drizzle-orm`, así que no había tipos que fallaran. Contra el esquema real `tsc` sí reporta errores, pero emite igual porque no hay `noEmitOnError`, de modo que el `SyntaxError` de arranque sigue siendo alcanzable y **la decisión no cambia**. Corregido en sitio; el estado no se toca (`prd-authoring.md` § Decision).
 
 ## Impacted Projects
 
@@ -443,7 +445,7 @@ SyntaxError: The requested module '../../../src/lib/schema.js' does not provide
 an export named 'subscriptions'
 ```
 
-La causa es que las dos reglas divergen justo en el import cruzado que esta fase acepta como deuda. Bajo `module: nodenext`, TypeScript decide el formato **por fichero según el `package.json` más cercano al fuente**: `apps/api/src/*.ts` caería bajo `apps/api/package.json` (ESM) y `src/lib/schema.ts` cae bajo la raíz, que no tiene `"type"` (CJS). En runtime, Node decide **por el `package.json` más cercano a la salida**, y toda la salida vive dentro de `apps/api/` — así que `dist/src/lib/schema.js`, emitido como CJS, se carga como ESM y no expone ningún nombre. `tsc` sale 0 sin un solo aviso.
+La causa es que las dos reglas divergen justo en el import cruzado que esta fase acepta como deuda. Bajo `module: nodenext`, TypeScript decide el formato **por fichero según el `package.json` más cercano al fuente**: `apps/api/src/*.ts` caería bajo `apps/api/package.json` (ESM) y `src/lib/schema.ts` cae bajo la raíz, que no tiene `"type"` (CJS). En runtime, Node decide **por el `package.json` más cercano a la salida**, y toda la salida vive dentro de `apps/api/` — así que `dist/src/lib/schema.js`, emitido como CJS, se carga como ESM y no expone ningún nombre. **Y `tsc` emite igualmente**: contra el esquema real aparecen errores de tipo de `drizzle-orm` por el doble `resolution-mode`, pero sin `noEmitOnError` el `dist` se escribe de todas formas, así que el fallo de arranque sigue siendo alcanzable — que es lo único de lo que depende esta decisión.
 
 `apps/api` pasa a ESM en la fase de `packages/shared`, cuando el esquema viva bajo su mismo paquete y las dos reglas vuelvan a coincidir. La fila 1 de § 9 detecta esta regresión, pero después de implementarla: sirve de red, no de especificación, y por eso la decisión se cierra aquí.
 
@@ -461,10 +463,27 @@ La causa es que las dos reglas divergen justo en el import cruzado que esta fase
 
 ## Gate: Promotion to Implemented
 
+<!-- yellow-tracking: los 🟡 de la re-revisión post-implementación se cerraron
+     por la vía 3 de gate-block.md — nota en el SYSTEM_ARTIFACT.md del sibling.
+     backend 🟡 1 (listener del pool de pg), 🟡 2 (causeCode con respaldo a
+     err.code, con `detail` nombrado como la trampa que queda) y 🟡 3 (el
+     tsconfig de la raíz excluye `apps`, sin lo cual `next build` falla y no
+     solo engorda); quality 🟡 (src/lib/pixel.ts ausente de Impacted Projects);
+     security 🟢 C y G (cómo contar los 400 del webhook, y PADDLE_TRACK_ENABLED
+     sin retirar en el paso 5). Todos presentes en el diff declarado abajo.
+     Los demás 🟡 se cerraron como fix-in-code en el rango de `commit_hash`.
+     Ningún AgDR: los dos implementadores aplicaron el listón de
+     prd-authoring.md y ninguna decisión lo superó. -->
+
 ```yaml
-commit_hash: [TBD]
+commit_hash: 5e33432
 tests:
-  - [TBD]
+  - ../platform/apps/api/test/build-boot.e2e-spec.ts
+  - ../platform/apps/api/src/session/session.guard.spec.ts
+  - ../platform/apps/api/src/access/access.service.spec.ts
+  - ../platform/apps/api/test/access.e2e-spec.ts
+  - ../platform/apps/api/test/billing.e2e-spec.ts
+  - ../platform/scripts/check-access-bridge.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/docs/SYSTEM_ARTIFACT.md#domain-acceso (commit 5e33432)
 ```
