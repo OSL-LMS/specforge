@@ -1,6 +1,6 @@
 # PRD-004: Reconciliación con Paddle — el primer trabajo diferido de `apps/api`
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-28
 **Author**: AI-assisted
 **Priority**: P1
@@ -166,10 +166,12 @@ paddle.subscriptions.list({ perPage: 100 })   // → SubscriptionCollection
 | `past_due` | `active` | Deuda heredada declarada en `SYSTEM_ARTIFACT.md`; se reproduce |
 | `paused` | `active` | Ídem |
 | `trialing` | `active` | El trial **de Paddle** (con tarjeta) es una conversión |
-| cualquier otro | — | No se mapea y no se escribe. Cuenta como `desconocido` |
+| cualquier otro | — | El mapa **no decide**: devuelve "no mapeado" y la política es del llamante. En el reconciliador, no escribir y contar `desconocido` |
 | — | `trial` | **Inalcanzable desde Paddle** |
 
-**El mapa se extrae a `apps/api/src/billing/paddle-status.ts`** y lo consumen el reconciliador y la rama `Created / Activated / Updated` del webhook. Con dos copias, un `past_due` haría que cada escritor pisara al otro y la fila oscilaría sin que ningún test lo viera. **La extracción sustituye `billing.controller.ts:129` y nada más**: la rama `EventName.SubscriptionCanceled` (`:144-154`) escribe `"canceled"` sin leer `data.status`, es dirigida por evento, y no cambia.
+**El mapa se extrae a `apps/api/src/billing/paddle-status.ts`** y lo consumen el reconciliador y la rama `Created / Activated / Updated` del webhook. Con dos copias, un `past_due` haría que cada escritor pisara al otro y la fila oscilaría sin que ningún test lo viera.
+
+**Lo compartido es el mapa, no la política ante un estado no mapeado**, y los dos llamantes la tienen distinta a propósito. El webhook cae a `active`, porque hoy hace `data.status === "canceled"` y cualquier otra cosa es `active`: cambiarlo sería alterar comportamiento shipeado, que es justo lo que la fila 5 de § 9 vigila. El reconciliador salta y cuenta `desconocido`, porque un estado que el SDK pineado no declara solo puede venir de una versión más nueva de la API, y adivinar hacia dónde cae es cómo se escribe una denegación por accidente. La asimetría se sostiene sin riesgo de oscilación porque el reconciliador **no escribe** en ese caso: nunca hay dos escritores discrepando. **La extracción sustituye `billing.controller.ts:129` y nada más**: la rama `EventName.SubscriptionCanceled` (`:144-154`) escribe `"canceled"` sin leer `data.status`, es dirigida por evento, y no cambia.
 
 **`emailFromCustomData` se mueve a `apps/api/src/billing/paddle-email.ts`** y también se comparte: es el único guarda de tipo sobre un campo que el navegador controla en el checkout público, y un segundo extractor divergente sería la misma clase de fallo. El reconciliador **añade dos cotas** que el webhook no necesita porque escribe una vez y aquí se reintenta cada hora: descarta lo que no lleve `@` y lo que pase de 254 caracteres (RFC 5321). Lo descartado suma a `sin_correo`.
 
@@ -244,7 +246,7 @@ flowchart LR
 - `config.module.ts` es `@Global()` y su fábrica corre al construir el contenedor, exigiendo `AUTH_SECRET`, `AUTH_COOKIE_NAME` y `PADDLE_WEBHOOK_SECRET`. Un worker que lo importara moriría en cada pasada nombrando `AUTH_SECRET`, y el atajo de darle las cuatro variables metería en un tercer servicio el secreto de sesión —falsificable, sin revocación individual— y el del webhook, justo lo que PRD-003 paso 5 quitó.
 - `AccessModule` registra `AccessController`, cuyo `@UseGuards(SessionGuard)` arrastra `SessionGuard` → `API_CONFIG`, y **exporta solo `AccessService`**: no podría suministrar el repositorio ni aunque se importara.
 
-**`worker-config.ts` expone un `WorkerConfigModule` marcado `@Global()` que además `exports: [API_CONFIG]`.** Las dos mitades hacen falta y la segunda es la que trabaja: en Nest un módulo global no registra sus providers globalmente, registra **lo que exporta** — por eso `config.module.ts:15` lleva ese `exports` y por eso resuelven hoy los dos consumidores, que no importan nada: `DrizzleModule` inyecta `API_CONFIG` en su fábrica de `PG_POOL` (`drizzle.module.ts:38`) y `AnalyticsService` en su constructor (`analytics.service.ts:39`). Declarar `API_CONFIG` como provider local de `WorkerModule` haría fallar el contenedor en la construcción, que es el mismo fallo una indirección más adentro. `WorkerModule` importa `WorkerConfigModule`, `DrizzleModule`, `AnalyticsModule` y `ReconcileModule`, y provee `SubscriptionsRepository` directamente (sin conflicto: `DrizzleModule` es `@Global()` y exporta `DRIZZLE`).
+**`worker-config.ts` expone un `WorkerConfigModule` marcado `@Global()` que además `exports: [API_CONFIG]`.** Las dos mitades hacen falta y la segunda es la que trabaja: en Nest un módulo global no registra sus providers globalmente, registra **lo que exporta** — por eso `config.module.ts:15` lleva ese `exports` y por eso resuelven hoy los dos consumidores, que no importan nada: `DrizzleModule` inyecta `API_CONFIG` en su fábrica de `PG_POOL` (`drizzle.module.ts:38`) y `AnalyticsService` en su constructor (`analytics.service.ts:39`). Declarar `API_CONFIG` como provider local de `WorkerModule` haría fallar el contenedor en la construcción, que es el mismo fallo una indirección más adentro. `WorkerModule` importa `WorkerConfigModule`, `DrizzleModule`, `AnalyticsModule` y `ReconcileModule`. **`SubscriptionsRepository` se declara en `ReconcileModule`, que es donde se consume**, y no en `WorkerModule`: en Nest un provider solo es visible dentro de su propio módulo y de quien importe el módulo que lo exporta, así que declararlo arriba dejaría a `ReconcileService` sin resolver y el contenedor moriría con `UnknownDependenciesException`. `DRIZZLE` sí llega desde cualquier sitio, porque `DrizzleModule` es `@Global()` y lo exporta.
 
 `resolveWorkerConfig()` exige:
 
@@ -375,8 +377,10 @@ Vitest en `apps/api`, con la convención de PRD-003. Los e2e con base exigen `AP
 | 35 | Arranque sin `PADDLE_API_KEY` | E2E | El worker lanzado con `spawn` sale distinto de 0 nombrando `PADDLE_API_KEY`, sin abrir conexión a Postgres — goal 8 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
 | 36 | Arranque sin `DATABASE_URL` | E2E | Ídem nombrando `DATABASE_URL` — goal 8 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
 | 37 | `PADDLE_ENV` ausente o inexacta | E2E | Ausente, `Production`, `prod` o con espacio → sale 1 nombrando `PADDLE_ENV` — goal 8, § 7.1 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
+| 37b | `RECONCILE_DEADLINE_MS` ilegible | E2E | `abc`, `0`, `-1` o `5.5` salen 1 nombrándola; ausente, vacía o un entero positivo arrancan. El validador no cae al defecto en silencio porque el deadline es el único freno de un barrido sin límite de páginas (§ 8.4) y porque su invariante de § 5.1 deja de comprobarse si el valor se sustituye solo — § 7.1 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
 | 38 | `POSTHOG_API_KEY` con escritura activada | E2E | Con `RECONCILE_APPLY=true` y sin esa variable → sale 1 nombrándola; sin `RECONCILE_APPLY` arranca — goal 8, § 7.1 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
 | 39 | El worker no exige los secretos del servicio HTTP | E2E | Con `AUTH_SECRET`, `AUTH_COOKIE_NAME` y `PADDLE_WEBHOOK_SECRET` **ausentes**, el worker emite la línea `reconcile: config resuelta` (§ 5.1) y el test mata el proceso ahí. Se afirma sobre esa línea y no sobre un fallo posterior, porque lo único entre la configuración y la salida es la llamada a Paddle — goal 13, § 7.1 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
+| 39b | El grafo de módulos del worker resuelve | E2E | Con la configuración completa y una `DATABASE_URL` inalcanzable, el proceso **se deja terminar** y muere en Postgres (`code=ECONNREFUSED`) y no en la DI. La fila 39 sola no lo cubre: mata al hijo al ver la línea de configuración, que se emite **antes** de construir el contenedor, así que un `WorkerModule` que no resolviera pasaría en verde. Sigue sin tocar Paddle, porque el barrido carga la tabla antes de iterar — § 7.1 | `../platform/apps/api/test/worker-boot.e2e-spec.ts` |
 | 40 | El entrypoint del worker existe donde se dice | E2E | Tras `pnpm --filter api build`, `dist/apps/api/src/worker.js` existe | `../platform/apps/api/test/build-boot.e2e-spec.ts` |
 | 41 | El servicio HTTP se niega a arrancar con `PADDLE_API_KEY` | E2E | Arrancar `main.js` con la variable puesta sale con código 1 y el mensaje la nombra — goal 9, § 8.1 | `../platform/apps/api/test/build-boot.e2e-spec.ts` |
 | 42 | La suite existente sobrevive al guarda | Regresión | Con `PADDLE_API_KEY` exportada en el entorno del desarrollador, `applyApiEnv()` la limpia y las filas 1-3 de PRD-003 § 9 siguen pasando — § 8.1 | `../platform/apps/api/test/build-boot.e2e-spec.ts` |
@@ -410,7 +414,7 @@ En `.env.example`, `PADDLE_API_KEY` y `RECONCILE_APPLY` van **comentadas**, en b
 
 ## 11. Open Questions
 
-- [ ] **¿Permite el panel de Paddle de esta cuenta crear una clave acotada a lectura de suscripciones?** Bloquea el paso 2 de § 10. Si no, el control 1 de § 8.1 —el que carga el peso— desaparece, y la decisión de seguir con una clave plena o descartar el PRD es del usuario. **Debe cerrarse antes de `Implemented`.**
+- [x] **¿Permite el panel de Paddle de esta cuenta crear una clave acotada a lectura de suscripciones?** **Sí** (confirmado por el usuario, 2026-07-28). El control 1 de § 8.1 —el que carga el peso— se sostiene, y el paso 2 de § 10 puede ejecutarse tal como está escrito. El código refuerza el acotado por su lado: `reconcile/paddle.client.ts` inyecta el cliente tipado como `PaddleReader`, así que `cancel()`, `update()` y `pause()` no existen en el tipo y una llamada a cualquiera de ellos no compila.
 - [ ] **¿Cómo se aplican las revocaciones que el barrido detecta y no escribe?** Hoy: a mano, sobre `pendiente_revocacion`. Automatizarlo es un PRD aparte y **tiene un prerrequisito**: mientras el camino de conceder rellene `paddle_subscription_id`, ese identificador no puede servir de autorización para revocar (§ 1.3 punto 3). Quien lo aborde necesita otra fuente de vínculo, probablemente el cliente de Paddle.
 - [ ] **¿Se cierra el ataque del correo ajeno en el checkout, y con qué?** Abierto desde PRD-003. **No bloquea este PRD**: § 1.3 garantiza que lo peor que el barrido puede hacer es conceder acceso de más.
 - [ ] **¿Una vez por hora es la frecuencia correcta?** Diferido a los datos del paso 4.
@@ -447,10 +451,36 @@ En `.env.example`, `PADDLE_API_KEY` y `RECONCILE_APPLY` van **comentadas**, en b
 
 ## Gate: Promotion to Implemented
 
+<!-- AgDR emitido durante la implementación: AgDR-001 (semántica del contador
+     `divergencias`). No condiciona la promoción; es registro, no precondición.
+
+     yellow-tracking: los 🟡 de la re-revisión post-implementación.
+     · security 🟡 1 (§11 pregunta 1, la clave acotada de Paddle) — cerrada por
+       el usuario el 2026-07-28; §11 la marca resuelta.
+     · security 🟡 2 (el invariante "el barrido no revoca" lo sostenían dos
+       literales, no los tipos) — fix-in-code en a634958: `ReconcilerChanges`.
+     · backend 🟡 2 (`RECONCILE_DEADLINE_MS` con validador no ejercitado) —
+       fix-in-code en a634958: fila 37b de §9.
+     · backend 🟡 1 (el camino del deadline SÍ vacía el lote de PostHog, contra
+       lo que dicen §5.1 y §8.2) — vía 3: nota en el SYSTEM_ARTIFACT del
+       sibling, sección `Background jobs`, presente en el diff declarado abajo
+       (94053e2).
+       No se arregla en código a propósito: saltarse el cierre del contexto para
+       hacer cierto el texto sería estrictamente peor.
+     · quality 🟡 (AgDR-001 sin `Commit`) — rellenado con a634958. -->
+
 ```yaml
-commit_hash: [TBD]
+commit_hash: a634958
 tests:
-  - [TBD]
+  - ../platform/apps/api/src/billing/paddle-status.spec.ts
+  - ../platform/apps/api/src/billing/paddle-email.spec.ts
+  - ../platform/apps/api/src/reconcile/reconcile.service.spec.ts
+  - ../platform/apps/api/src/worker.spec.ts
+  - ../platform/apps/api/src/db/drizzle.module.spec.ts
+  - ../platform/apps/api/test/billing.e2e-spec.ts
+  - ../platform/apps/api/test/reconcile.e2e-spec.ts
+  - ../platform/apps/api/test/worker-boot.e2e-spec.ts
+  - ../platform/apps/api/test/build-boot.e2e-spec.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/docs/SYSTEM_ARTIFACT.md#background-jobs (commit 94053e2)
 ```

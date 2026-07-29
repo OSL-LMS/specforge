@@ -43,3 +43,16 @@ Ninguno.
 
 **Evidence**:
 - PRD-003 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-003 § 1 -->
+
+### ROADMAP-003: Que un pago perdido deje de costar el acceso
+
+**Status**: Shipped
+**Last reviewed**: 2026-07-28
+**PRD**: PRD-004
+
+**Problem / outcome**: El estado de cobro llegaba por una sola vía —el webhook de Paddle— y nada detectaba ni reparaba un evento perdido, así que un estudiante que pagaba podía quedarse sin tutor hasta el siguiente evento de su suscripción, que puede tardar un mes. Un barrido periódico repara esa dirección sin intervención. La contraria —seguir sirviendo a quien canceló— se detecta y se cuenta, pero se deja a decisión humana a propósito: una revocación automática por correo es irreversible y el correo lo elige quien inicia el checkout.
+**User**: estudiante que paga (recupera el acceso sin escribir a soporte); mantenedores del repositorio (la deriva pasa a ser un número observable en cada pasada en vez de una incógnita).
+**Siblings likely impacted**: platform
+
+**Evidence**:
+- PRD-004 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-004 § 1 -->
