@@ -1,6 +1,6 @@
 # PRD-005 (fase 2): el stream del tutor en `apps/api`, proxyado por `apps/web`
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-30
 **Author**: AI-assisted
 **Priority**: P1
@@ -441,10 +441,37 @@ Lo que decidió el cambio no fue el hallazgo suelto sino su forma: **la superfic
 
 ## Gate: Promotion to Implemented
 
+<!-- yellow-tracking: los cuatro 🟡 de la re-revisión post-implementación, cada
+     uno a un destino concreto:
+       1. backend — los dos saneados del hilo contaban distinto → fix-in-code en
+          el rango de `commit_hash` (y el de la raíz desapareció con el paso E,
+          que retiró la función entera).
+       2. security — nada se ponía rojo si el paso E desplegaba sin armar el
+          guarda de ANTHROPIC_API_KEY → fix-in-code: tripwire en
+          `scripts/check-secrets.ts`, que se autoactivó al desaparecer
+          `new Anthropic(` del handler y obligó a armarlo.
+       3. security + backend — `TUTOR_TIMEOUT_MS` mide "hasta el primer token"
+          y sigue sin calibrar → nota en `docs/SYSTEM_ARTIFACT.md` § Open Debt
+          del dominio `tutor` (commit cf959f4).
+       4. frontend — la rama de cero bytes no la verificaba nadie → cerrada por
+          ejecución: comprobación manual del paso B, las dos pasadas, hecha en
+          producción el 2026-07-30.
+     Ningún 🔴 quedó abierto en los cuatro dominios. -->
+
 ```yaml
-commit_hash: [TBD]
+commit_hash: 1075045
 tests:
-  - [TBD]
+  - ../platform/apps/api/test/tutor.e2e-spec.ts
+  - ../platform/apps/api/test/build-boot.e2e-spec.ts
+  - ../platform/apps/api/test/worker-boot.e2e-spec.ts
+  - ../platform/apps/api/test/throttle.e2e-spec.ts
+  - ../platform/apps/api/src/tutor/turn.dto.spec.ts
+  - ../platform/apps/api/src/tutor/tutor.service.spec.ts
+  - ../platform/apps/api/src/tutor/curriculum.repository.spec.ts
+  - ../platform/apps/api/src/common/all-exceptions.filter.spec.ts
+  - ../platform/scripts/check-tutor-turn.ts
+  - ../platform/scripts/check-secrets.ts
+  - ../platform/scripts/check-access-bridge.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/docs/SYSTEM_ARTIFACT.md#domain-tutor (commit bd152fe)
 ```
