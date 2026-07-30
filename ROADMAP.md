@@ -56,3 +56,16 @@ Ninguno.
 
 **Evidence**:
 - PRD-004 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-004 § 1 -->
+
+### ROADMAP-004: El tutor, fuera del framework web
+
+**Status**: Shipped
+**Last reviewed**: 2026-07-30
+**PRD**: PRD-005
+
+**Problem / outcome**: El tutor —lo único de la plataforma por lo que alguien paga— seguía viviendo dentro del servidor que sirve páginas, así que la frontera que ADR-001 compró cubría la periferia y no el centro. Y lo que se le enseñaba al modelo salía del array que mandaba el navegador, no de la conversación guardada, de modo que un cliente podía fabricar lo que el tutor supuestamente había dicho antes. Pasa a servirse desde `apps/api`, con Next de proxy, y el hilo pasa a salir de la base.
+**User**: estudiante (sin cambio observable salvo que el turno abandonado deja de facturarse); mantenedores del repositorio (la frontera y el coste de sostenerla).
+**Siblings likely impacted**: platform
+
+**Evidence**:
+- PRD-005 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-005 § 1 -->
