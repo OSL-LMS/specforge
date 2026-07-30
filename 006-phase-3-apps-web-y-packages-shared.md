@@ -276,7 +276,7 @@ Verificado además que el `COPY` parcial de manifiestos de `apps/api/Dockerfile:
 
 ### 7.4 CI
 
-`.github/workflows/checks.yml`, nuevo, disparado en `pull_request`. Corre `pnpm install --frozen-lockfile` y después lo que no necesita base: `check-boundaries.ts`, `pnpm curriculum:check`, `node scripts/check-window.ts`, las seis de `apps/web/scripts/`, `pnpm --filter web build` y **`pnpm --filter api test test/build-boot.e2e-spec.ts`** — no `pnpm --filter api build`, que es `tsc -p tsconfig.json` (`apps/api/package.json:11`) y no puede ejecutar una spec de vitest. La fila 11 de § 9 se apoya en esa spec, que se basta sola: hace su propio build en `beforeAll` y se pone sus variables en línea. Invocar `pnpm --filter api test` a secas arrastraría las seis specs que la fila 12 marca `operador`.
+`.github/workflows/checks.yml`, nuevo, disparado en `pull_request`. Corre `pnpm install --frozen-lockfile` —que hace del lockfile regenerado un requisito duro del commit de la mudanza, no una cortesía (§ 10 paso 3)— y después lo que no necesita base: `check-boundaries.ts`, `pnpm curriculum:check`, `node scripts/check-window.ts`, las seis de `apps/web/scripts/`, `pnpm --filter web build` y **`pnpm --filter api test test/build-boot.e2e-spec.ts`** — no `pnpm --filter api build`, que es `tsc -p tsconfig.json` (`apps/api/package.json:11`) y no puede ejecutar una spec de vitest. La fila 11 de § 9 se apoya en esa spec, que se basta sola: hace su propio build en `beforeAll` y se pone sus variables en línea. Invocar `pnpm --filter api test` a secas arrastraría las seis specs que la fila 12 marca `operador`.
 
 **Tres cosas que el workflow tiene que declarar, y sin las cuales no arranca en verde:**
 
@@ -415,9 +415,16 @@ La columna `Type` distingue además **CI** (lo corre `checks.yml` en cada PR) de
 
 Un solo commit en el árbol — un repositorio a medio mover no compila, así que no hay pasos intermedios mergeables. Lo que se escalona es la verificación **antes** del merge, porque el merge es el despliegue.
 
-**Paso 1 — Spike de arranque, antes de escribir el commit.** En una rama, mover solo `package.json`/`next.config.mjs`/`src`/`public` a `apps/web`, poner los scripts delegados en la raíz, y correr **`nixpacks plan` y `nixpacks build` contra esa rama** — no `pnpm build`, que solo prueba la delegación de pnpm y no dice nada sobre la detección de Railway. Alternativa igual de válida: desplegar la rama a un servicio Railway desechable. Verificar también que un `.env.local` colocado en `apps/web/` es el que se lee (§ 8.4). **Si Nixpacks no genera plan, el plan cambia y hay que revisar este PRD antes de seguir**: la variante con `apps/web/Dockerfile` mete un cambio de variable en Railway. Descartar la rama del spike — no deja rastro, así que el rollback del paso 8 sigue siendo un `git revert` limpio.
+**Paso 1 — Spike de arranque. Ejecutado el 2026-07-30; la puerta está despejada.** Se corrió tal como este paso lo especificaba: rama desechable con `package.json`/`next.config.mjs`/`tsconfig.json`/`src`/`public` movidos a `apps/web`, manifiesto de la raíz reducido a los dos scripts delegados, y `nixpacks plan` (v1.41.0) contra esa rama. Resultado:
 
-Nota: el spike **no** puede aflorar el fallo de `externalDir` (§ 5.3), porque `packages/shared` todavía no existe en él. Ese aparece en el paso 5.
+- **Nixpacks genera plan.** `NIXPACKS_METADATA: node`, `setup` con `nodejs_24`, `build: pnpm run build`, `start: pnpm run start` — los dos scripts delegados de la raíz. Detecta Next **dentro de `apps/web`** por su cuenta: el plan lista `apps/web/.next/cache` en `cacheDirectories`.
+- **Por tanto § 7.3 se sostiene y `apps/web/Dockerfile` no hace falta.** La variante de respaldo queda descartada, y con ella el cambio de variable en Railway que arrastraba.
+- **El bloque `env:` de § 7.4 punto 2 es necesario y suficiente, probado en las dos direcciones.** Con solo `AUTH_COOKIE_NAME` y `API_BASE_URL` en un entorno por lo demás vacío (`env -i`), `pnpm --filter web build` termina en verde y las tres rutas dinámicas salen marcadas `ƒ`. Sin ellas muere con `Error: AUTH_COOKIE_NAME debe ser …` y `Failed to collect page data for /api/chat`. El punto 3 ("nada más") queda confirmado por ejecución, no por lectura.
+- **Hallazgo nuevo del spike, incorporado al paso 3**: partir el manifiesto **invalida `pnpm-lock.yaml`**. `pnpm install --frozen-lockfile` falla con `ERR_PNPM_OUTDATED_LOCKFILE` nombrando las 16 dependencias que se movieron.
+
+La rama se descartó y `platform` quedó en el estado previo, así que el rollback del paso 8 sigue siendo un `git revert` limpio.
+
+Dos cosas que el spike **no** puede aflorar, y que por eso siguen vivas más adelante: el fallo de `externalDir` (§ 5.3), porque `packages/shared` no existe en él —aparece en el paso 5—, y que un `.env.local` colocado en `apps/web/` sea el que se lee (§ 8.4), que se verifica en el paso 6.
 
 **Paso 2 — La mudanza, con `git mv`.** Sin editar contenido:
 1. `src/`, `public/`, `next.config.mjs`, `tsconfig.json` → `apps/web/`. **`next-env.d.ts` no**: está en `.gitignore:9` y no lo rastrea git, así que `git mv` abortaría; Next lo regenera.
@@ -443,6 +450,8 @@ Nota: el spike **no** puede aflorar el fallo de `externalDir` (§ 5.3), porque `
 - **el manifiesto de la raíz no declara `"type": "module"`** y los tres `.mjs` conservan su extensión (§ 7.2).
 
 *Entradas de `scripts`*: la raíz **parte la cadena en dos** (`package.json:14`). `curriculum:check` conserva `check-curriculum-golden.ts`, `check-lessons.ts` y `check-curriculum-identity.ts` —las tres que no tocan base, y por tanto las únicas que CI puede correr— más `check-curriculum.ts`; sale `check-schedule.ts`, que se muda, y sale `check-curriculum-load.ts` a un `curriculum:check:db` nuevo, porque exige `CURRICULUM_TEST_DATABASE_URL` y sale 1 sin ella (§ 7.4). La raíz repunta o retira además `check:access`, `check:turn` y `check:secrets` (`:16-18`), que apuntan a archivos que se mudan. `apps/web/package.json` gana las seis entradas correspondientes, `check:secrets` incluida (§ 8.2).
+
+*Lockfile*: **regenerar `pnpm-lock.yaml` en el mismo commit** y commitearlo. Partir el manifiesto de la raíz lo invalida —el spike del paso 1 lo confirmó: `pnpm install --frozen-lockfile` sale con `ERR_PNPM_OUTDATED_LOCKFILE` nombrando las 16 dependencias movidas— y § 7.4 corre CI precisamente con `--frozen-lockfile`, así que un lockfile olvidado deja rojo el PR de la propia mudanza.
 
 *Tests*: `apps/api/test/build-boot.e2e-spec.ts:138` → `dist/packages/shared/src/schema.js`.
 
