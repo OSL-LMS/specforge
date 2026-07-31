@@ -4,6 +4,7 @@ description: Rules for editing specforge's own framework files (CLAUDE.md, CONVE
 paths:
   - "CLAUDE.md"
   - "CONVENTIONS.md"
+  - "SIBLINGS.md"
   - ".claude/rules/*.md"
 ---
 
