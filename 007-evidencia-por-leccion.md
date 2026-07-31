@@ -1,7 +1,8 @@
 # PRD-007: La evidencia por lección, declarada y verificada
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-31
+**Roadmap item**: ROADMAP-006
 **Author**: AI-assisted
 **Priority**: P1
 **Depends on**: PRD-002, PRD-003, PRD-006
@@ -623,10 +624,27 @@ Ninguna abierta. El riesgo residual de DNS rebinding (§ 8.2) es una decisión t
 
 ## Gate: Promotion to `Implemented`
 
+<!-- yellow-tracking: el 🟡 de la re-revisión post-implementación sobre el campo
+     `url` del cuerpo de POST (no declarado en § 5.1) se rutó a nota en
+     SYSTEM_ARTIFACT — ver `apps/api/docs/SYSTEM_ARTIFACT.md` § Domain:
+     evidencia / Open Debt, commit 34b13d1. El resto de 🟡 se cerró en código:
+     f090bd4 (región viva), a9f7b21 (cubo global por handler), fc49db1
+     (trazabilidad de § 9). -->
+
 ```yaml
-commit_hash: [TBD]
+commit_hash: 34b13d1
 tests:
-  - [TBD]
+  - ../platform/apps/api/src/evidence/evidence.dto.spec.ts
+  - ../platform/apps/api/src/evidence/evidence-verifier.spec.ts
+  - ../platform/apps/api/src/evidence/evidence.service.spec.ts
+  - ../platform/apps/api/test/evidence.e2e-spec.ts
+  - ../platform/apps/api/test/build-boot.e2e-spec.ts
+  - ../platform/scripts/check-curriculum.ts
+  - ../platform/scripts/check-curriculum-golden.ts
+  - ../platform/apps/web/scripts/check-evidence-bridge.ts
+  - ../platform/scripts/check-boundaries.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/apps/api/docs/SYSTEM_ARTIFACT.md#domain-evidencia (commit 34b13d1)
+  - ../platform/packages/shared/docs/SYSTEM_ARTIFACT.md#domain-contenido (commit 34b13d1)
+  - ../platform/apps/web/docs/SYSTEM_ARTIFACT.md#dominios-que-viven-en-otro-paquete (commit 34b13d1)
 ```

@@ -84,3 +84,19 @@ Ninguno.
 - PRD-006 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-006 § 1 -->
 
 **Caveats**: el repositorio gana su primera CI en el mismo corte, y es **advisoria**: no bloquea el merge, porque la protección de rama quedó declinada por decisión del propietario. Compra visibilidad, no puerta.
+
+### ROADMAP-006: La evidencia del estudiante, recogida y comprobada
+
+**Status**: Shipped
+**Last reviewed**: 2026-07-31
+**PRD**: PRD-007
+
+**Problem / outcome**: La plataforma era un chat con un muro de pago que no registraba nada de lo que hacía un estudiante: ni quién avanzaba, ni quién se atascaba en qué lección, ni de dónde saldría el portafolio verificable que la escuela vende. El dato que lo hacía barato ya estaba escrito y sin usar — el `outcome` de cada lección no es un objetivo de aprendizaje, es un artefacto que existe en internet. Pasa a recogerse por estudiante y por lección, distinguiendo **declarado** de **verificado** en el esquema y no en la interpretación, porque un portafolio que acepta autodeclaraciones no es verificable. El progreso no se mide por consumo: si la métrica se puede subir sin aprender nada, es la métrica equivocada.
+**User**: estudiante (entrega y ve su evidencia); evaluador de la defensa H1 (deja de abrir a mano el repositorio de cada estudiante antes de cada sesión); mantenedores (el abandono por lección pasa a ser consultable).
+**Siblings likely impacted**: apps-api, apps-web, shared
+
+**Evidence**:
+- CON-6 <!-- categoría 2: issue del tracker del equipo, con el problema y sus restricciones pedagógicas -->
+- PRD-007 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-007 § 1 -->
+
+**Caveats**: la verificación es de **alcanzabilidad**, no de contenido — "una página con su nombre" y "un repositorio con más de un commit" quedan para un PRD posterior. Y de las siete lecciones de E1 solo tres producen un artefacto propio: el `verified` de L2, L3, L4 y L6 apunta a la misma dirección que el de L1, así que sirve como señal de abandono y no como evidencia de piezas distintas.
