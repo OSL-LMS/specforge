@@ -1,6 +1,6 @@
 # PRD-006 (fase 3): `apps/web` y `packages/shared` — cierre de ADR-001
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-30
 **Author**: AI-assisted
 **Priority**: P2
@@ -511,14 +511,65 @@ Lo que se pierde con la carpeta: un especificador desnudo impediría añadir una
 
 ---
 
-<!-- yellow-tracking: pendiente — se completa tras la re-revisión post-implementación (workflow.md paso 9). -->
+<!-- yellow-tracking: PRD-006 — diez should-fix de la re-revisión post-implementación,
+     todos enrutados. Ningún bloqueante abierto en los cuatro dominios.
+
+     Arreglados en código, dentro del rango de `commit_hash`:
+       backend  — next-auth sin especificador `catalog:` en dos manifiestos
+       backend  — README.md §Estructura y la cabecera de pnpm-workspace.yaml
+                  describían la raíz como la app Next
+       security — check-boundaries.ts descartaba los owners de CODEOWNERS: una
+                  regla sin dueño RETIRA la propiedad (last-match-wins), así que
+                  borrar el @owner de una línea desprotegía el archivo en verde
+       security — la regex de la fila 4 perdía imports indentados o precedidos de
+                  comentario, y ninguna versión miraba imports por efecto ni
+                  dinámicos, que tampoco llevan modificador `type`
+       security — la fila 1 solo resolvía imports relativos, así que un `@/lib/x`
+                  desde packages/shared pasaba en verde
+       security — SOURCE_ROOTS y LIB_ROOTS no tenían piso de cobertura: apuntar
+                  uno a un directorio inexistente dejaba el control examinando la
+                  mitad sin dejar de dar verde
+       security — el tripwire de check-secrets.ts no estaba anclado, así que
+                  COMENTAR el import lo dejaba verde con el guarda desarmado
+
+     Nota en SYSTEM_ARTIFACT.md (commit 5496fc9, §Comprobaciones y §Entorno y despliegue):
+       backend + security — la aserción `curriculumSlug()` retirada de
+                  check-curriculum.ts, rota desde el paso E de PRD-005
+       backend + quality  — next-auth vive en los tres manifiestos por cómo
+                  resuelve una carpeta de fuentes; §10 paso 3 no lo listaba
+
+     Advisorios (🟢) no accionados, con razón registrada: documentar
+     `*.type-test.ts` como convención (una sola instancia), y añadir
+     check-boundaries.ts y check-curriculum.ts a PROTECTED_PATHS (el código
+     cumple la lista declarada de §8.1; ensancharla es decisión de otro PRD). -->
 
 ## Gate: Promotion to Implemented
 
 ```yaml
-commit_hash: [TBD]
+commit_hash: a7a5408
 tests:
-  - [TBD]
+  - ../platform/scripts/check-boundaries.ts
+  - ../platform/apps/web/scripts/check-analytics.ts
+  - ../platform/scripts/check-curriculum.ts
+  - ../platform/scripts/check-curriculum-golden.ts
+  - ../platform/scripts/check-lessons.ts
+  - ../platform/scripts/check-curriculum-identity.ts
+  - ../platform/scripts/check-window.ts
+  - ../platform/apps/web/scripts/check-secrets.ts
+  - ../platform/apps/web/scripts/check-tutor-turn.ts
+  - ../platform/apps/web/scripts/check-access-bridge.ts
+  - ../platform/apps/web/scripts/check-format-message.ts
+  - ../platform/apps/web/scripts/check-schedule.ts
+  - ../platform/apps/api/test/build-boot.e2e-spec.ts
+  - ../platform/apps/api/test/access.e2e-spec.ts
+  - ../platform/apps/api/test/billing.e2e-spec.ts
+  - ../platform/apps/api/test/tutor.e2e-spec.ts
+  - ../platform/apps/api/test/reconcile.e2e-spec.ts
+  - ../platform/apps/api/test/throttle.e2e-spec.ts
+  - ../platform/apps/api/test/worker-boot.e2e-spec.ts
+  - ../platform/scripts/check-curriculum-load.ts
+  - ../platform/apps/web/src/lib/analytics.type-test.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/docs/SYSTEM_ARTIFACT.md#comprobaciones (commit 5496fc9)
+  - ../platform/docs/SYSTEM_ARTIFACT.md#entorno-y-despliegue (commit 5496fc9)
 ```
