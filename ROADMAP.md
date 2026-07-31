@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last rotated**: 2026-07-28
+**Last rotated**: 2026-07-31
 **Stale threshold**: 6 months
 **Visibility**: public
 
@@ -69,3 +69,18 @@ Ninguno.
 
 **Evidence**:
 - PRD-005 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-005 § 1 -->
+
+### ROADMAP-005: La frontera entre dominio y presentación, terminada
+
+**Status**: Shipped
+**Last reviewed**: 2026-07-31
+**PRD**: PRD-006
+
+**Problem / outcome**: ADR-001 decidió tres paquetes y sólo se habían construido dos, así que `apps/api` alcanzaba siete módulos de la raíz —cinco por ruta relativa de cuatro niveles, dos por copia— y la raíz del repositorio era a la vez raíz del workspace y servicio desplegado. La deriva que esa forma permite había ocurrido ya: el union de eventos de telemetría tenía seis miembros en un lado y siete en el otro. Los tres paquetes existen ahora y los duplicados se cerraron por construcción. Cierra ADR-001; el equipo deja de sostener una migración a medias, que su § 6 nombra como el peor de los estados posibles.
+**User**: mantenedores del repositorio (la frontera y su coste de mantenimiento); estudiante (sin cambio observable — mismas rutas, misma sesión, mismo dominio).
+**Siblings likely impacted**: platform
+
+**Evidence**:
+- PRD-006 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-006 § 1 -->
+
+**Caveats**: el repositorio gana su primera CI en el mismo corte, y es **advisoria**: no bloquea el merge, porque la protección de rama quedó declinada por decisión del propietario. Compra visibilidad, no puerta.
