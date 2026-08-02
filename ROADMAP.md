@@ -99,4 +99,20 @@ Ninguno.
 - CON-6 <!-- categoría 2: issue del tracker del equipo, con el problema y sus restricciones pedagógicas -->
 - PRD-007 <!-- categoría 7: item retroactivo creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-007 § 1 -->
 
+### ROADMAP-007: Programar una temporada deja de ser un despliegue
+
+**Status**: Shipped
+**Last reviewed**: 2026-08-01
+**PRD**: PRD-008
+
+**Problem / outcome**: El calendario de clases vivía en un array de TypeScript donde sólo cabía una temporada, así que anunciar la siguiente exigía editar código y desplegar, y una segunda cohorte no tenía dónde existir. Cuando la escuela repitiera E1 —y va a repetirlo— no habría forma de decir a qué emisión perteneció cada estudiante ni de conservar la grabación de la primera. Las emisiones pasan a ser dato: varias temporadas conviven, la misma lección puede emitirse en varias, y programar una es una carga y no un despliegue.
+**User**: quien programa el calendario (deja de necesitar un despliegue para anunciar una clase o publicar una grabación); estudiante (sin cambio con una temporada; con dos, ve el histórico agrupado en vez de una lista plana); adoptante del repositorio (un curso sin clases en directo funciona sin sección de calendario).
+**Siblings likely impacted**: shared, apps-web
+
+**Evidence**:
+- CON-7 <!-- categoría 2: issue del tracker, con el problema y sus restricciones -->
+- PRD-008 <!-- categoría 7: item creado por el flujo de auto-update (PRD-001 § 4.2); la justificación vive en PRD-008 § 1 -->
+
+**Caveats**: la home cambia de diseño con **dos o más** temporadas —la tabla se agrupa y el copy estático deja de contar clases—, lo que sale del "cero cambio visible" que el issue dibujaba; con una sola, el estado de hoy, no cambia nada. Y el copy sigue afirmando "martes y jueves, 20:00 Colombia", que ni los días ni la hora son derivables de una emisión suelta: una temporada con otro horario lo haría falso, y queda anotado en `SYSTEM_ARTIFACT`.
+
 **Caveats**: la verificación es de **alcanzabilidad**, no de contenido — "una página con su nombre" y "un repositorio con más de un commit" quedan para un PRD posterior. Y de las siete lecciones de E1 solo tres producen un artefacto propio: el `verified` de L2, L3, L4 y L6 apunta a la misma dirección que el de L1, así que sirve como señal de abandono y no como evidencia de piezas distintas.

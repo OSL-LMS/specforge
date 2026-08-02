@@ -1,7 +1,8 @@
 # PRD-008: Las emisiones como dato, y más de una temporada
 
-**Status**: Draft
+**Status**: Implemented
 **Date**: 2026-07-31
+**Roadmap item**: ROADMAP-007
 **Author**: AI-assisted
 **Priority**: P2
 **Depends on**: PRD-002, PRD-006
@@ -166,7 +167,7 @@ Lo que cambia es de dónde sale el instante. Hoy se compone con `new Date(\`${da
 | `America/Bogota` | `2026-07-15T01:00:00Z` | `2026-07-15T01:00:00Z` |
 | `Asia/Tokyo` | `2026-07-14T11:00:00Z` | `2026-07-15T01:00:00Z` |
 
-Tres instantes distintos frente a uno. Es exactamente el fallo que el formato manual existe para evitar, reintroducido por la puerta de atrás — y la fila 8 de § 9 es lo único que lo detecta, porque `formatSessionDate` es pura y sigue verde con la columna mal declarada.
+Tres instantes distintos frente a uno. Es exactamente el fallo que el formato manual existe para evitar, reintroducido por la puerta de atrás — y la fila 25 de § 9 es lo único que lo detecta, porque `formatSessionDate` es pura y sigue verde con la columna mal declarada.
 
 **La regla, dicha bien**: la lleva *cualquier columna cuyo valor vuelva a convertirse en un instante absoluto*, no "todo lo que no sea una marca de auditoría". El resto del esquema usa `timestamp` sin zona, y al menos una —`lesson_evidence.checked_at`, que PRD-007 § 5.1 serializa con `.toISOString()`— tiene la misma exposición. No es problema de este PRD arreglarla, pero la regla se escribe aquí para que la próxima tabla no la repita.
 
@@ -320,9 +321,11 @@ Decirlo así y no "la superficie es pequeña" no es prudencia retórica: `CODEOW
 | 23 | **Carga: una lección retirada no borra su emisión** | integration | Se retira el nodo del currículo y la fila de `broadcasts` sigue con su `vod_url` (§ 6.3). | `../platform/scripts/check-seasons-load.ts` |
 | 24 | Carga: rechaza sin escribir nada | integration | Un archivo con un slug malo deja la tabla como estaba. | `../platform/scripts/check-seasons-load.ts` |
 | 25 | **Carga: `starts_at` da el mismo instante bajo dos `TZ`** | integration | Se lee la misma fila con `TZ=UTC` y `TZ=Asia/Tokyo` y se comparan los milisegundos. **Es lo único que falla si alguien "simplifica" la columna a `timestamp`** — la fila 15 es pura y sigue verde (§ 6.2). | `../platform/scripts/check-seasons-load.ts` |
-| 26 | Regresión: fronteras | unit | El módulo nuevo de `shared` no alcanza `apps/`; ningún Client Component importa `@shared/*` por valor. | `../platform/scripts/check-boundaries.ts` |
+| 26 | **Carga: un `id` de otro currículo aborta** | integration | Añadida en la re-revisión. `curriculum` queda fuera del `set` del upsert (§ 6.5), así que un `id` copiado entra por `ON CONFLICT` y sobrescribe en silencio la fila ajena. La carga aborta, la fila de origen queda intacta y el archivo rechazado no deja filas a medias. | `../platform/scripts/check-seasons-load.ts` |
+| 27 | **Lectura: no relanza, devuelve `[]` y registra** | integration | Añadida en la re-revisión. Es la diferencia deliberada con `curriculum.ts` (§ 7.3) y lo único que impide que un fallo del calendario tumbe la home entera. Se ejercita en subproceso contra un host que no resuelve. | `../platform/scripts/check-seasons-load.ts` |
+| 28 | Regresión: fronteras, y **el detector de URLs es único** | unit | El módulo nuevo de `shared` no alcanza `apps/`; ningún Client Component importa `@shared/*` por valor; y ninguna de las piezas del detector se define en un segundo módulo — la regla de § 6.4 deja de ser prosa. | `../platform/scripts/check-boundaries.ts` |
 
-Bloques contiguos por fichero: 1-11 `check-seasons.ts`, 12-19 `check-schedule.ts`, 20 `check-curriculum-golden.ts`, 21-25 `check-seasons-load.ts`, 26 `check-boundaries.ts`. Cada fichero declara su rango en la cabecera.
+Bloques contiguos por fichero: 1-11 `check-seasons.ts`, 12-19 `check-schedule.ts`, 20 `check-curriculum-golden.ts`, 21-27 `check-seasons-load.ts`, 28 `check-boundaries.ts`. Cada fichero declara su rango en la cabecera.
 
 **Dónde corre cada cosa, corregido respecto al borrador anterior.** Éste afirmaba que `checks.yml` "no invoca ningún agregado", y es **falso**: `checks.yml:72` ejecuta `pnpm curriculum:check`, que encadena cuatro scripts. Lo cierto es que no hay agregado para los de `apps/web/scripts/`, que es el contexto donde PRD-007 lo dijo. Consecuencia práctica:
 
@@ -376,10 +379,22 @@ Bloques contiguos por fichero: 1-11 `check-seasons.ts`, 12-19 `check-schedule.ts
 
 ## Gate: Promotion to `Implemented`
 
+<!-- yellow-tracking: los cinco 🟡 de la re-revisión post-implementación se
+     cerraron EN CÓDIGO, todos en el commit e1f91f1, y cada uno verificado por
+     mutación: la fila 10 no probaba el detector, el "20:00" no derivaba del
+     dato, la guarda de propiedad no tenía test (fila 26), § 7.3 no tenía fila
+     (fila 27) y nada impedía una segunda implementación del detector (fila 28).
+     Las filas 26-28 son posteriores al congelado y quedan declaradas aquí. -->
+
 ```yaml
-commit_hash: [TBD]
+commit_hash: e1f91f1
 tests:
-  - [TBD]
+  - ../platform/scripts/check-seasons.ts
+  - ../platform/apps/web/scripts/check-schedule.ts
+  - ../platform/scripts/check-curriculum-golden.ts
+  - ../platform/scripts/check-seasons-load.ts
+  - ../platform/scripts/check-boundaries.ts
 system_artifact_diff:
-  - [TBD]
+  - ../platform/packages/shared/docs/SYSTEM_ARTIFACT.md#domain-contenido (commit e1f91f1)
+  - ../platform/apps/web/docs/SYSTEM_ARTIFACT.md#dominios-que-viven-en-otro-paquete (commit e1f91f1)
 ```
