@@ -384,10 +384,17 @@ Bloques contiguos por fichero: 1-11 `check-seasons.ts`, 12-19 `check-schedule.ts
      mutación: la fila 10 no probaba el detector, el "20:00" no derivaba del
      dato, la guarda de propiedad no tenía test (fila 26), § 7.3 no tenía fila
      (fila 27) y nada impedía una segunda implementación del detector (fila 28).
-     Las filas 26-28 son posteriores al congelado y quedan declaradas aquí. -->
+     Las filas 26-28 son posteriores al congelado y quedan declaradas aquí.
+
+     `commit_hash` es 7412767 y NO e1f91f1, que es donde el código aterrizó:
+     aquél tumbó la landing en 500 porque `unstable_cache` serializa a JSON y
+     `startsAt` volvía como cadena. 7412767 es donde la funcionalidad queda
+     completa. La deuda —que ningún test de este repositorio corre dentro del
+     proceso de Next, así que esa frontera no la cruza nadie— quedó registrada
+     en los dos SYSTEM_ARTIFACT en 024273d, que es el que cita el gate. -->
 
 ```yaml
-commit_hash: e1f91f1
+commit_hash: 7412767
 tests:
   - ../platform/scripts/check-seasons.ts
   - ../platform/apps/web/scripts/check-schedule.ts
@@ -395,6 +402,6 @@ tests:
   - ../platform/scripts/check-seasons-load.ts
   - ../platform/scripts/check-boundaries.ts
 system_artifact_diff:
-  - ../platform/packages/shared/docs/SYSTEM_ARTIFACT.md#domain-contenido (commit e1f91f1)
-  - ../platform/apps/web/docs/SYSTEM_ARTIFACT.md#dominios-que-viven-en-otro-paquete (commit e1f91f1)
+  - ../platform/packages/shared/docs/SYSTEM_ARTIFACT.md#domain-contenido (commit 024273d)
+  - ../platform/apps/web/docs/SYSTEM_ARTIFACT.md#dominios-que-viven-en-otro-paquete (commit 024273d)
 ```
