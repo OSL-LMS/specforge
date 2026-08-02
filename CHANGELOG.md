@@ -76,7 +76,7 @@ Shipped via [PRD-002: SDD-2026 Framework Alignment](002-sdd-2026-framework-align
 
 ### Changed
 - "12 invariants" → "13 invariants" caption in `CLAUDE.md`, `README.md`, `README.es.md`; `docs/faq.md` corrected from a stale "11" to "13".
-- `tests/roadmap/hard_rules_12_test.md`: count guard revised from hard-coded "exactly 12 / no rule 13" to caption-synchronization. This revises the conformance contract of [PRD-001 §9 row #25](001-product-roadmap.md#9-test-plan); PRD-001 stays frozen.
+- ~~`tests/roadmap/hard_rules_12_test.md`: count guard revised from hard-coded "exactly 12 / no rule 13" to caption-synchronization. This revises the conformance contract of [PRD-001 §9 row #25](001-product-roadmap.md#9-test-plan); PRD-001 stays frozen.~~ **Corrected 2026-08-02**: neither `tests/roadmap/` nor `001-product-roadmap.md` exists in this repository, and neither ever did — see the note under 0.4.0. The caption-synchronization guard described here is real and lives in the rule files; what does not exist is the test that was said to enforce it.
 - `templates/prd.md` § 2 Goals: comment gains the optional reactive-goal phrasing hint.
 
 ### Fixed
@@ -101,8 +101,25 @@ Shipped via [PRD-002: SDD-2026 Framework Alignment](002-sdd-2026-framework-align
 
 ## [0.4.0] - 2026-04-19
 
+> **Corrección del 2026-08-02.** Esta entrada afirmaba tres artefactos que **no
+> existen en el repositorio y nunca existieron** (comprobado sobre el historial
+> completo de git): el PRD `001-product-roadmap.md`, el directorio
+> `tests/roadmap/` con sus 32 walkthroughs, y una fila de auto-referencia
+> `specforge` en `SIBLINGS.md`. Van tachados abajo.
+>
+> **El resto de 0.4.0 sí aterrizó y funciona**: las ocho briefings de
+> `agents/`, `.claude/rules/roadmap.md`, `templates/roadmap.md`, `ROADMAP.md`,
+> la hard rule 12, la página de docs y la entrada de `upgrade.sh`. El ciclo
+> opera —el flujo de auto-update de gate se ha ejecutado varias veces—, así que
+> lo que falta no es la funcionalidad: es el documento que registraba su
+> *porqué* y la suite que comprobaba su conformidad.
+>
+> Las citas `PRD-001 §N.N` que quedan en las reglas y en `ROADMAP.md` **no
+> resuelven a nada** y se conservan a propósito, con el aviso escrito en
+> `.claude/rules/roadmap.md`: la fuente de verdad de este ciclo es ese archivo.
+
 ### Added
-- **Product roadmap planning cycle** (PRD-001). Introduces `ROADMAP.md` as a global living document capturing product-level intent (problem, user, evidence, status, horizon) with no technical detail.
+- ~~**Product roadmap planning cycle** (PRD-001).~~ **El PRD no existe**; el ciclo sí, y su contrato vive en `.claude/rules/roadmap.md`. Introduces `ROADMAP.md` as a global living document capturing product-level intent (problem, user, evidence, status, horizon) with no technical detail.
 - `.claude/rules/roadmap.md` — the canonical rule file for the roadmap cycle (unscoped, always loaded).
 - `templates/roadmap.md` — blank starter for adopting teams.
 - Two-panel workflow: 4 generator briefings (`roadmap-{product,ux,market,support}-generator.md`) + 4 critic briefings (`roadmap-{evidence,devils-advocate,opportunity-cost,risk}-critic.md`) in `agents/`.
@@ -112,7 +129,7 @@ Shipped via [PRD-002: SDD-2026 Framework Alignment](002-sdd-2026-framework-align
 - `Visibility: public | private` header field on `ROADMAP.md` to modulate PII severity (strict-by-default).
 - Optional `Roadmap item: ROADMAP-NNN` PRD header field, with retroactive-escape at gate promotion for PRDs that lack it.
 - Hard rule 12 in `hard-rules.md`: evidence discipline and PII carve-out as framework-level invariants.
-- `tests/roadmap/` — 32 conformance walkthroughs matching PRD-001 §9 Test Plan.
+- ~~`tests/roadmap/` — 32 conformance walkthroughs matching PRD-001 §9 Test Plan.~~ **No existen.** El directorio `tests/` no está en el repositorio; el ciclo del roadmap no tiene suite de conformidad.
 - New docs page: [Concepts → Roadmap](https://angelkurten.github.io/specforge-framework/concepts/roadmap/).
 
 ### Changed
@@ -121,7 +138,7 @@ Shipped via [PRD-002: SDD-2026 Framework Alignment](002-sdd-2026-framework-align
 - `prd-authoring.md`: documents the optional `Roadmap item:` header field and the retroactive-escape semantics.
 - `framework-maintenance.md`: new "Generator/critic briefing variant" subsection documenting the 4-variable generator contract and 5-variable critic contract (distinct from the 5-variable PRD reviewer contract).
 - `scripts/upgrade.sh`: `ROADMAP.md` added to `TEAM_FILES` so adopting teams' roadmap data is never overwritten by upgrades.
-- `SIBLINGS.md`: `specforge` self-reference row added (required by hard-rule 11 for PRD-001).
+- ~~`SIBLINGS.md`: `specforge` self-reference row added (required by hard-rule 11 for PRD-001).~~ **No se añadió.** `SIBLINGS.md` tiene cuatro filas y ninguna es `specforge`. La exigencia de hard rule 11 sólo muerde si un PRD cita `specforge` en su tabla de Impacted Projects, y ninguno lo hace.
 
 ### Compat
 - Backward-compatible. PRDs authored before PRD-001 are grandfathered — the `Roadmap item:` header is optional and the retroactive-escape flow covers them on their next ship.

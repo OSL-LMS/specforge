@@ -5,7 +5,13 @@ description: The product roadmap planning cycle. Covers the 7-step generative fl
 
 # Roadmap
 
-`ROADMAP.md` is specforge's single living document capturing product-level intent: problem, user, evidence, status, horizon. No technical detail. PRDs and ADRs stay frozen; `ROADMAP.md` is mutable. See [PRD-001](../../001-product-roadmap.md) for the full contract.
+`ROADMAP.md` is specforge's single living document capturing product-level intent: problem, user, evidence, status, horizon. No technical detail. PRDs and ADRs stay frozen; `ROADMAP.md` is mutable.
+
+> **`PRD-001` does not exist, and never did.** Verified against the full git history on 2026-08-02. The `PRD-001 §N.N` citations in this file, in `workflow.md`, `prd-authoring.md`, `model-selection.md` and `ROADMAP.md` resolve to nothing — they were written as if a companion PRD had shipped alongside the 0.4.0 cycle, and it had not. See the correction under `CHANGELOG.md` § 0.4.0.
+>
+> **This file is the contract.** Everything the citations gesture at is here: the two flows, the six evidence categories, the PII carve-out, the status transitions and schema validation, the fence spec, decay and `Visibility`. Nothing is missing — what is missing is the record of *why* those choices were made, and that is unrecoverable because nobody wrote it down at the time.
+>
+> The citations are kept rather than stripped, deliberately: they are the only trace that a companion document was intended, and deleting them would erase the evidence along with the error. Read `§4.1` as "the generative flow" and `§4.2` as "the auto-update flow", both defined below. **There is also no conformance suite** — `tests/roadmap/` does not exist, so every rule in this file is enforced by reading, not by a check.
 
 ## Two flows
 

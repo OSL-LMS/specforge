@@ -1,0 +1,195 @@
+{
+  "main": {
+    "id": "0a1f23170e51dcec",
+    "type": "split",
+    "children": [
+      {
+        "id": "a695d1ca18fbb41a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3ca30c498d2f47e4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "002-curriculo-como-dato.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "002-curriculo-como-dato"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e6a15d20fc042e17",
+    "type": "split",
+    "children": [
+      {
+        "id": "2cf42469ab967e90",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "952088459260bd44",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "e50435058e83ab61",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "ecbd379a4b5f62b1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "88d63f502ba98ffb",
+    "type": "split",
+    "children": [
+      {
+        "id": "9eac82dc7bed1570",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bbbf1800c36016d5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "002-curriculo-como-dato.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes de 002-curriculo-como-dato"
+            }
+          },
+          {
+            "id": "255c9a57336ed38e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "002-curriculo-como-dato.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes de 002-curriculo-como-dato"
+            }
+          },
+          {
+            "id": "33fdf4acbfd9fe15",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "4936ef6a67f77718",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas las propiedades"
+            }
+          },
+          {
+            "id": "f01b0fb46ac0d3bd",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "002-curriculo-como-dato.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Esquema de 002-curriculo-como-dato"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Crear nueva base": false
+    }
+  },
+  "active": "3ca30c498d2f47e4",
+  "lastOpenFiles": [
+    "003-phase-1-api-acceso-y-cobro.md",
+    "005-phase-2-stream-del-tutor.md",
+    "AgDR-001-semantica-del-contador-divergencias.md",
+    "004-reconciliacion-paddle-worker.md",
+    "003-phase-1-api-acceso-y-cobro.md.tmp.17825.9601639ac6c6",
+    "ADR-001-backend-nestjs-front-nextjs.md"
+  ]
+}
